@@ -11,7 +11,7 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next, ...$guards)
     {
         if (Auth::check()) {
-            return redirect('/home'); // Điều hướng về trang chủ nếu đã đăng nhập
+            return redirect('/admin'); // Điều hướng về trang chủ nếu đã đăng nhập
         }
 
         return $next($request);

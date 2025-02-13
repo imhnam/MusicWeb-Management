@@ -11,14 +11,18 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers; // Laravel xử lý login/logout
 
-    public function __construct()
-    {
-        // $this->middleware('guest')->except('logout'); // Chặn user đã đăng nhập vào trang login
-    }
-
     public function showLoginForm()
     {
         return view('auth.login'); // Trả về view đăng nhập
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard'); // Chuyển hướng admin đến /admin
+        }
+
+        return redirect()->route('home'); // Chuyển hướng user thường đến /home
     }
 
     public function login(Request $request)
@@ -27,14 +31,17 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
-    
+
         if (Auth::attempt($request->only('email', 'password'))) {
-            if (Auth::user()->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('home');
+            return $this->authenticated($request, Auth::user());
         }
-    
+
         return back()->withErrors(['email' => 'Email hoặc mật khẩu không đúng']);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect('/login');
     }
 }

@@ -28,10 +28,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::resource('playlists', PlaylistController::class);
 });
 
-// Route dành cho người dùng đã đăng nhập
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [DashboardController::class, 'index'])->name('home');
-});
 
 // Route login & logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

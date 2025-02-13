@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('auth'); // Chặn người chưa đăng nhập
-        // $this->middleware('admin'); // Chặn người không phải admin
-    }
-
     // Hiển thị danh sách người dùng
     public function index()
     {
