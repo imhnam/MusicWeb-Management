@@ -19,10 +19,9 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard'); // Chuyển hướng admin đến /admin
+            return redirect()->route('admin.dashboard');
         }
-
-        return redirect()->route('home'); // Chuyển hướng user thường đến /home
+        return redirect()->route('home');
     }
 
     public function login(Request $request)

@@ -18,8 +18,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-// Nhóm route Admin - Chỉ Admin mới có quyền truy cập
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('users', UserController::class);
     Route::resource('artists', ArtistController::class);
@@ -27,7 +26,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::resource('genres', GenreController::class);
     Route::resource('playlists', PlaylistController::class);
 });
-
 
 // Route login & logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
