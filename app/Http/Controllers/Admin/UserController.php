@@ -6,69 +6,164 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     // Hiển thị danh sách người dùng
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $query = User::query();
+
+        // Tìm kiếm
+        if ($request->filled('keyword')) {
+            $searchBy = $request->get('search_by', 'all');
+            $keyword = $request->get('keyword');
+
+            if ($searchBy === 'all') {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('id', 'like', "%{$keyword}%")
+                        ->orWhere('name', 'like', "%{$keyword}%")
+                        ->orWhere('email', 'like', "%{$keyword}%")
+                        ->orWhere('role', 'like', "%{$keyword}%");
+                });
+            } else {
+                $query->where($searchBy, 'like', "%{$keyword}%");
+            }
+        }
+
+        // Lọc theo vai trò
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // Sắp xếp
+        $sortBy = $request->get('sort_by', 'id_desc');
+        switch ($sortBy) {
+            case 'id_asc':
+                $query->orderBy('id', 'asc');
+                break;
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'id_desc':
+            default:
+                $query->orderBy('id', 'desc');
+                break;
+        }
+
+        // Phân trang
+        $perPage = $request->get('per_page', 10);
+        $users = $query->paginate($perPage);
+        $users->appends($request->all());
+
         return view('admin.users.index', compact('users'));
     }
-
-    // Hiển thị form thêm người dùng
     public function create()
     {
-        return view('admin.users.create');
+        $roles = ['admin' => 'Admin', 'user' => 'User', 'artist' => 'Artist'];
+        return view('admin.users.create', compact('roles'));
     }
 
-    // Lưu người dùng mới vào database
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users|max:255',
-            'password' => 'required|min:6|confirmed',
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', Rule::in(['admin', 'user', 'artist'])],
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // Mã hóa mật khẩu an toàn
-        ]);
+        try {
+            User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => $validated['role'],
+            ]);
 
-        return redirect()->route('users.index')->with('success', 'Người dùng đã được tạo thành công!');
+            return redirect()->route('users.index')
+                ->with('success', 'Người dùng đã được tạo thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra khi tạo người dùng!')
+                ->withInput();
+        }
     }
 
-    // Hiển thị form chỉnh sửa người dùng
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        if ($user->id === Auth::id()) {
+            return redirect()->route('users.index')
+                ->with('error', 'Không thể chỉnh sửa tài khoản của chính mình ở đây!');
+        }
+
+        $roles = ['admin' => 'Admin', 'user' => 'User', 'artist' => 'Artist'];
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
-    // Cập nhật thông tin người dùng
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6|confirmed',
+        if ($user->id === Auth::id()) {
+            return redirect()->route('users.index')
+                ->with('error', 'Không thể cập nhật tài khoản của chính mình ở đây!');
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', Rule::in(['admin', 'user', 'artist'])],
         ]);
 
-        // Cập nhật thông tin người dùng
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
-        ]);
+        try {
+            $updateData = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'role' => $validated['role'],
+            ];
 
-        return redirect()->route('users.index')->with('success', 'Người dùng đã được cập nhật thành công!');
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            $user->update($updateData);
+
+            return redirect()->route('users.index')
+                ->with('success', 'Người dùng đã được cập nhật thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra khi cập nhật người dùng!')
+                ->withInput();
+        }
     }
 
-    // Xóa người dùng
     public function destroy(User $user)
     {
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'Người dùng đã được xóa!');
+        if ($user->id === Auth::id()) {
+            return redirect()->route('users.index')
+                ->with('error', 'Không thể xóa tài khoản của chính mình!');
+        }
+
+        try {
+            $user->delete();
+            return redirect()->route('users.index')
+                ->with('success', 'Người dùng đã được xóa thành công!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra khi xóa người dùng!');
+        }
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('search');
+
+        $users = User::where('name', 'like', "%{$search}%")
+            ->orWhere('email', 'like', "%{$search}%")
+            ->paginate(10);
+
+        return view('admin.users.index', compact('users'));
     }
 }

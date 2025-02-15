@@ -17,7 +17,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'logo' => '<b>Music</b>Manager',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png', // Đường dẫn logo
+    'logo_img' => 'vendor/adminlte/dist/img/LogoWebSite.png', // Đường dẫn logo
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',

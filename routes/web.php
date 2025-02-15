@@ -27,6 +27,10 @@ Route::prefix('admin')->middleware(['auth', \App\Http\Middleware\AdminMiddleware
     Route::resource('playlists', PlaylistController::class);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [DashboardController::class, 'index'])->name('home');
+});
+
 // Route login & logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
