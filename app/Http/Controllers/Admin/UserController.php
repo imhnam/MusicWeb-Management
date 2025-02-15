@@ -57,7 +57,7 @@ class UserController extends Controller
         }
 
         // Phân trang
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 15);
         $users = $query->paginate($perPage);
         $users->appends($request->all());
 

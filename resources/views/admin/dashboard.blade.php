@@ -97,5 +97,8 @@
         </div>
     </div>
 </div>
-
+<!-- Preloader -->
+<div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__shake" src="{{ asset('vendor/adminlte/dist/img/LogoWebSite.png') }}" alt="Logo" height="115" width="128">
+</div>
 @endsection
