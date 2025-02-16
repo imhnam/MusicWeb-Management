@@ -13,13 +13,13 @@ class SongController extends Controller
     public function index(Request $request)
     {
         $query = Song::with(['artist', 'genre']);
-    
+
         // Lấy dữ liệu từ request
         $keyword = $request->get('keyword');
         $searchBy = $request->get('search_by', 'all');
         $sortBy = $request->get('sort_by', 'id_desc');
         $perPage = $request->get('per_page', 10);
-    
+
         // Xử lý tìm kiếm
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($keyword, $searchBy) {
@@ -48,7 +48,7 @@ class SongController extends Controller
                 }
             });
         }
-    
+
         // Xử lý sắp xếp
         switch ($sortBy) {
             case 'id_asc':
@@ -67,14 +67,16 @@ class SongController extends Controller
                 $query->orderBy('id', 'desc'); // Mặc định sắp xếp theo ID mới nhất
                 break;
         }
-    
-        // Phân trang
-        $songs = $query->paginate($perPage);
-        $songs->appends($request->all());
-    
+
+        // Xử lý phân trang
+        if ($perPage === 'all') {
+            $songs = $query->get(); // Lấy tất cả bản ghi (không phân trang)
+        } else {
+            $songs = $query->paginate((int) $perPage); // Phân trang như bình thường
+        }
+
         return view('admin.songs.index', compact('songs'));
     }
-    
 
     // Hiển thị form tạo bài hát
     public function create()

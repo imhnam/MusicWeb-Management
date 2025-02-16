@@ -56,10 +56,13 @@ class UserController extends Controller
                 break;
         }
 
-        // Phân trang
-        $perPage = $request->get('per_page', 15);
-        $users = $query->paginate($perPage);
-        $users->appends($request->all());
+        $perPage = $request->get('per_page', 10);
+        // Kiểm tra nếu chọn "Tất cả", lấy toàn bộ dữ liệu
+        if ($perPage === 'all') {
+            $users = $query->get(); // Lấy tất cả người dùng
+        } else {
+            $users = $query->paginate((int) $perPage)->appends($request->all());
+        }
 
         return view('admin.users.index', compact('users'));
     }
