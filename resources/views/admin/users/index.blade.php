@@ -100,9 +100,12 @@
                 <tr>
                     <td>{{ $user->id }}</td>
                     <td>
-                        <img src="{{ asset($user->avatar ?? 'vendor/adminlte/dist/img/default-avt.jpg') }}"
-                            alt="Avatar" class="img-thumbnail" width="32" height="32">
-                    </td> <!-- Cột Avatar -->
+                        @if($user->avatar)
+                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}" class="img-thumbnail" style="max-height: 50px;">
+                        @else
+                        <img src="{{ asset('images/no-avt.jpg') }}" alt="{{ $user->name }}" class="img-thumbnail" style="max-height: 50px;">
+                        @endif
+                    </td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
@@ -112,7 +115,6 @@
                     </td>
                     <td>
                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Sửa</a>
-
                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
@@ -178,7 +180,6 @@
     }
 
     .img-thumbnail {
-        border-radius: 50%;
         object-fit: cover;
     }
 </style>

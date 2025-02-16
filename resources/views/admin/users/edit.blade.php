@@ -11,7 +11,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('users.update', $user->id) }}" method="POST">
+                <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -47,6 +47,31 @@
                                 @error('email')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="avatar">Ảnh đại diện</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-image"></i>
+                                        </span>
+                                    </div>
+                                    <div class="custom-file">
+                                        <input type="file" name="avatar" class="custom-file-input @error('avatar') is-invalid @enderror" id="avatar">
+                                        <label class="custom-file-label" for="avatar">Chọn file</label>
+                                    </div>
+                                </div>
+                                @error('avatar')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                                
+                                @if($user->avatar)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/' . $user->avatar) }}" alt="Current avatar" class="img-thumbnail" style="max-height: 100px;">
+                                    <p class="text-muted mt-1">Avatar hiện tại</p>
+                                </div>
+                                @endif
                             </div>
                         </div>
 
@@ -137,6 +162,16 @@
         justify-content: center;
     }
 
+    .img-thumbnail {
+        object-fit: cover;
+    }
+    
+    .custom-file-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     /* Tùy chỉnh preloader */
     .preloader {
         display: flex;
@@ -162,25 +197,11 @@
     }
 
     @keyframes shake {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        25% {
-            transform: rotate(10deg);
-        }
-
-        50% {
-            transform: rotate(0deg);
-        }
-
-        75% {
-            transform: rotate(-10deg);
-        }
-
-        100% {
-            transform: rotate(0deg);
-        }
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(10deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-10deg); }
+        100% { transform: rotate(0deg); }
     }
 </style>
 @stop
@@ -188,17 +209,30 @@
 @section('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Preloader
         const preloader = document.querySelector('.preloader');
-
         if (preloader) {
-            // Hiển thị preloader khi trang bắt đầu tải
             preloader.style.display = 'flex';
-
-            // Ẩn preloader khi trang tải xong
             window.addEventListener('load', function() {
                 preloader.style.display = 'none';
             });
         }
+
+        // Xử lý hiển thị tên file khi chọn avatar
+        document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+            var fileName = e.target.files[0].name;
+            var nextSibling = e.target.nextElementSibling;
+            nextSibling.innerText = fileName;
+
+            // Preview ảnh
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('.img-thumbnail').src = e.target.result;
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
     });
 </script>
 @stop

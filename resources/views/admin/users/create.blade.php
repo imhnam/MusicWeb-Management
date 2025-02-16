@@ -9,7 +9,7 @@
                     <h3 class="card-title">Thêm Người Dùng</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('users.store') }}" method="POST" id="createUserForm">
+                    <form action="{{ route('users.store') }}" method="POST" id="createUserForm" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -54,6 +54,12 @@
                                 <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <!-- Trường upload avatar -->
+                        <div class="form-group">
+                            <label for="avatar">Ảnh đại diện:</label>
+                            <input type="file" name="avatar" class="form-control-file">
                         </div>
 
                         <button type="submit" class="btn btn-success">Thêm</button>
