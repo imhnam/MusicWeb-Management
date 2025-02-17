@@ -96,29 +96,12 @@
         </div>
     </div>
 </div>
-
-<!-- Preloader -->
-<div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="{{ asset('vendor/adminlte/dist/img/LogoWebSite.png') }}" alt="Logo" height="115" width="128">
-</div>
 @stop
 
 @section('css')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
 <style>
-    .preloader {
-        display: flex;
-        background-color: #f4f6f9;
-        height: 100vh;
-        width: 100%;
-        transition: height 200ms linear;
-        position: fixed;
-        left: 0;
-        top: 0;
-        z-index: 9999;
-    }
-    
     .select2-container--bootstrap4 .select2-selection--multiple {
         min-height: 38px;
     }
@@ -177,16 +160,5 @@
             ${song.text}
         </span>`);
     }
-
-    // Preloader
-    document.addEventListener('DOMContentLoaded', function() {
-        const preloader = document.querySelector('.preloader');
-        if (preloader) {
-            preloader.style.display = 'flex';
-            window.addEventListener('load', function() {
-                preloader.style.display = 'none';
-            });
-        }
-    });
 </script>
 @stop
