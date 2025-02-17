@@ -28,5 +28,10 @@ class Song extends Model
     {
         return $this->belongsTo(Genre::class);
     }
-}
 
+    // Bài hát thuộc về nhiều playlist (N-N)
+    public function playlists()
+    {
+        return $this->belongsToMany(Playlist::class);
+    }
+}
