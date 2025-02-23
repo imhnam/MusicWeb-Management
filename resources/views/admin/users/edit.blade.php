@@ -68,7 +68,7 @@
                                 
                                 @if($user->avatar)
                                 <div class="mt-2">
-                                    <img src="{{ asset('storage/' . $user->avatar) }}" alt="Current avatar" class="img-thumbnail" style="max-height: 100px;">
+                                    <img src="{{ secure_asset('storage/' . $user->avatar) }}" alt="Current avatar" class="img-thumbnail" style="max-height: 100px;">
                                     <p class="text-muted mt-1">Avatar hiện tại</p>
                                 </div>
                                 @endif

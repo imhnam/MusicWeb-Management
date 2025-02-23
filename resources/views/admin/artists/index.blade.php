@@ -81,9 +81,9 @@
                         <td>{{ $artist->id }}</td>
                         <td>
                             @if($artist->avatar)
-                            <img src="{{ asset('storage/' . $artist->avatar) }}" alt="{{ $artist->name }}" class="img-thumbnail" style="max-height: 50px;">
+                            <img src="{{ secure_asset('storage/' . $artist->avatar) }}" alt="{{ $artist->name }}" class="img-thumbnail" style="max-height: 50px;">
                             @else
-                            <img src="{{ asset('images/no-avt.jpg') }}" alt="{{ $artist->name }}" class="img-thumbnail" style="max-height: 50px;">
+                            <img src="{{ secure_asset('images/no-avt.jpg') }}" alt="{{ $artist->name }}" class="img-thumbnail" style="max-height: 50px;">
                             @endif
                         </td>
                         <td>{{ $artist->name }}</td>
