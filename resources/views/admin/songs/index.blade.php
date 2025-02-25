@@ -103,6 +103,9 @@
                     <td>{{ $song->genre->name ?? 'Không xác định' }}</td>
                     <td>{{ $song->duration }}</td>
                     <td>
+                        <a href="{{ route('songs.show', $song->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> Xem
+                        </a>
                         <a href="{{ route('songs.edit', $song->id) }}" class="btn btn-warning btn-sm">Sửa</a>
                         <form action="{{ route('songs.destroy', $song->id) }}" method="POST" style="display:inline;">
                             @csrf

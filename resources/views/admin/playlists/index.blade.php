@@ -104,6 +104,9 @@
                     <td>{{ $playlist->songs_count }}</td>
                     <td>{{ $playlist->created_at->format('d/m/Y H:i') }}</td>
                     <td>
+                        <a href="{{ route('playlists.show', $playlist->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> Xem
+                        </a>
                         <a href="{{ route('playlists.edit', $playlist->id) }}" class="btn btn-warning btn-sm">Sửa</a>
                         <form action="{{ route('playlists.destroy', $playlist->id) }}" method="POST" style="display:inline;">
                             @csrf

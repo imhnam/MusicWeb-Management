@@ -90,8 +90,10 @@
                         <td>{{ Str::limit($artist->bio, 100) }}</td>
                         <td>{{ $artist->songs_count }}</td>
                         <td>
-                            <a href="{{ route('artists.edit', $artist->id) }}"
-                                class="btn btn-sm btn-warning">
+                            <a href="{{ route('artists.show', $artist->id) }}" class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('artists.edit', $artist->id) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form action="{{ route('artists.destroy', $artist->id) }}"

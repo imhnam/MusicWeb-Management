@@ -23,7 +23,7 @@ class GenreController extends Controller
             $query->where(function ($q) use ($keyword, $searchBy) {
                 if ($searchBy === 'all') {
                     $q->where('name', 'like', "%{$keyword}%")
-                      ->orWhere('description', 'like', "%{$keyword}%");
+                        ->orWhere('description', 'like', "%{$keyword}%");
                 } elseif ($searchBy === 'id') {
                     if (is_numeric($keyword)) {
                         $q->where('id', intval($keyword));
@@ -167,5 +167,10 @@ class GenreController extends Controller
             ->paginate(10);
 
         return view('admin.genres.index', compact('genres'));
+    }
+    public function show(Genre $genre)
+    {
+        $genre->load('songs');
+        return view('admin.genres.show', compact('genre'));
     }
 }

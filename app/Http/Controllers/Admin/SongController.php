@@ -152,4 +152,8 @@ class SongController extends Controller
 
         return view('admin.song.index', compact('songs'));
     }
+    public function show(Song $song)
+    {
+        return view('admin.songs.show', compact('song'));
+    }
 }

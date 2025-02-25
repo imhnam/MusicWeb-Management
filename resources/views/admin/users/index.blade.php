@@ -114,13 +114,21 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> Xem
+                        </a>
+                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Sửa
+                        </a>
                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(this)">Xóa</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(this)">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
                         </form>
                     </td>
+
                 </tr>
                 @endforeach
             </tbody>

@@ -195,4 +195,10 @@ class PlaylistController extends Controller
 
         return view('admin.playlists.index', compact('playlists'));
     }
+    
+    public function show(Playlist $playlist)
+    {
+        $playlist->load(['user', 'songs.artist']);
+        return view('admin.playlists.show', compact('playlist'));
+    }
 }

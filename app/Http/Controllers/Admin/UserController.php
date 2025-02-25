@@ -173,4 +173,10 @@ class UserController extends Controller
             return back()->with('error', 'Có lỗi xảy ra khi xóa người dùng!');
         }
     }
+
+    public function show(User $user)
+{
+    return view('admin.users.show', compact('user'));
+}
+
 }

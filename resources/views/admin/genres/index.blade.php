@@ -102,6 +102,9 @@
                     <td>{{ Str::limit($genre->description, 100) }}</td>
                     <td>{{ $genre->songs_count }}</td>
                     <td>
+                        <a href="{{ route('genres.show', $genre->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> Xem
+                        </a>
                         <a href="{{ route('genres.edit', $genre->id) }}" class="btn btn-warning btn-sm">Sửa</a>
                         <form action="{{ route('genres.destroy', $genre->id) }}" method="POST" style="display:inline;">
                             @csrf

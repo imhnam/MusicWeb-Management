@@ -12,19 +12,19 @@ class ArtistController extends Controller
     public function index(Request $request)
     {
         $query = Artist::withCount('songs'); // Thêm số lượng bài hát
-    
+
         // Lấy dữ liệu từ request
         $keyword = $request->get('keyword');
         $searchBy = $request->get('search_by', 'all');
         $sortBy = $request->get('sort_by', 'id_desc');
         $perPage = $request->get('per_page', 10);
-    
+
         // Xử lý tìm kiếm
         if ($request->filled('keyword')) {
             $query->where(function ($q) use ($keyword, $searchBy) {
                 if ($searchBy === 'all') {
                     $q->where('name', 'like', "%{$keyword}%")
-                      ->orWhere('bio', 'like', "%{$keyword}%");
+                        ->orWhere('bio', 'like', "%{$keyword}%");
                 } elseif ($searchBy === 'id') {
                     if (is_numeric($keyword)) {
                         $q->where('id', intval($keyword));
@@ -34,7 +34,7 @@ class ArtistController extends Controller
                 }
             });
         }
-    
+
         // Xử lý sắp xếp
         switch ($sortBy) {
             case 'id_asc':
@@ -59,14 +59,14 @@ class ArtistController extends Controller
                 $query->orderBy('id', 'desc');
                 break;
         }
-    
+
         // Xử lý phân trang
         if ($perPage === 'all') {
             $artists = $query->get();
         } else {
             $artists = $query->paginate((int) $perPage)->appends($request->all());
         }
-    
+
         // Chuẩn bị dữ liệu cho view
         $searchOptions = [
             'all' => 'Tất cả',
@@ -74,7 +74,7 @@ class ArtistController extends Controller
             'name' => 'Tên nghệ sĩ',
             'bio' => 'Tiểu sử'
         ];
-    
+
         $sortOptions = [
             'id_desc' => 'ID (Mới nhất)',
             'id_asc' => 'ID (Cũ nhất)',
@@ -83,7 +83,7 @@ class ArtistController extends Controller
             'songs_count_desc' => 'Số bài hát (Nhiều nhất)',
             'songs_count_asc' => 'Số bài hát (Ít nhất)'
         ];
-    
+
         $perPageOptions = [
             10 => '10 mục',
             25 => '25 mục',
@@ -91,7 +91,7 @@ class ArtistController extends Controller
             100 => '100 mục',
             'all' => 'Tất cả'
         ];
-    
+
         return view('admin.artists.index', compact(
             'artists',
             'searchOptions',
@@ -107,7 +107,7 @@ class ArtistController extends Controller
     {
         return view('admin.artists.create');
     }
-    
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -148,7 +148,7 @@ class ArtistController extends Controller
                 if ($artist->avatar) {
                     Storage::disk('public')->delete($artist->avatar);
                 }
-                
+
                 // Upload avatar mới
                 $avatarPath = $request->file('avatar')->store('artists', 'public');
                 $validated['avatar'] = $avatarPath;
@@ -190,5 +190,10 @@ class ArtistController extends Controller
             ->paginate(10);
 
         return view('admin.artists.index', compact('artists'));
+    }
+    public function show(Artist $artist)
+    {
+        $artist->loadCount('songs'); // Đếm số bài hát
+        return view('admin.artists.show', compact('artist'));
     }
 }
