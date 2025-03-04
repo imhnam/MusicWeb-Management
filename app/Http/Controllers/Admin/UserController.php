@@ -103,7 +103,7 @@ class UserController extends Controller
         if ($user->id === Auth::id()) {
             return redirect()->route('users.index')->with('error', 'Không thể chỉnh sửa tài khoản của chính mình!');
         }
-        
+
         $roles = ['admin' => 'Admin', 'user' => 'User', 'artist' => 'Artist'];
         return view('admin.users.edit', compact('user', 'roles'));
     }
@@ -175,8 +175,7 @@ class UserController extends Controller
     }
 
     public function show(User $user)
-{
-    return view('admin.users.show', compact('user'));
-}
-
+    {
+        return view('admin.users.show', compact('user'));
+    }
 }
