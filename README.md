@@ -1,4 +1,4 @@
-# Hệ Thống Quản Lý Nhạc
+# Hệ Thống Quản Lý Bài Hát, Nghệ Sĩ
 
 ## Được Phát Triển Bởi:
 **Trịnh Hoài Nam**
